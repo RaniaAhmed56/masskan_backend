@@ -83,9 +83,9 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 # In production, point EMAIL_BACKEND at a real provider (SES/SendGrid/etc.)
 # via env vars once one is chosen — everything else in the codebase talks
 # to apps.common.services.notifications, so this is the only line to change.
-EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND") or "django.core.mail.backends.console.EmailBackend"
 EMAIL_HOST = os.environ.get("EMAIL_HOST", "")
-EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT") or "587")
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
 EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "true").lower() == "true"
