@@ -17,6 +17,9 @@ ALLOWED_HOSTS = [
     for host in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",")
     if host.strip()
 ]
+for default_host in ("masskan-backend-kohl.vercel.app",):
+    if default_host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(default_host)
 vercel_host = os.environ.get("VERCEL_URL", "").strip().removeprefix("https://").removeprefix("http://").rstrip("/")
 if vercel_host and vercel_host not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(vercel_host)
@@ -61,6 +64,12 @@ else:
     }
 
 CORS_ALLOW_ALL_ORIGINS = False
+
+frontend_origin = "https://masskan-integration.vercel.app"
+if frontend_origin not in CORS_ALLOWED_ORIGINS:
+    CORS_ALLOWED_ORIGINS.append(frontend_origin)
+if frontend_origin not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append(frontend_origin)
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
