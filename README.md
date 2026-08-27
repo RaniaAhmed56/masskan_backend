@@ -343,8 +343,9 @@ provisioned.
 
 ### Vercel
 
-The repository includes `api/index.py` and `vercel.json` for Vercel's Python
-runtime. Add these environment variables to the backend Vercel project:
+Vercel detects the Django project from `manage.py` and uses the explicit WSGI
+entrypoint in `pyproject.toml`. Add these environment variables to the backend
+Vercel project:
 
 ```text
 DJANGO_SETTINGS_MODULE=config.settings.prod
