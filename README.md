@@ -340,3 +340,20 @@ of your deploy step; media uploads (avatars, listing photos, verification
 documents) should be pointed at real object storage in production rather
 than local disk — swap `DEFAULT_FILE_STORAGE` in `prod.py` when that's
 provisioned.
+
+### Vercel
+
+The repository includes `api/index.py` and `vercel.json` for Vercel's Python
+runtime. Add these environment variables to the backend Vercel project:
+
+```text
+DJANGO_SETTINGS_MODULE=config.settings.prod
+DJANGO_SECRET_KEY=<long-random-secret>
+DJANGO_ALLOWED_HOSTS=<backend-domain>,<backend-project>.vercel.app
+DATABASE_URL=<managed-postgres-connection-string>
+FRONTEND_URL=https://<frontend-project>.vercel.app
+```
+
+Use `CORS_ALLOWED_ORIGIN_REGEXES` for additional Vercel preview URLs when
+needed. After the frontend is deployed, put its exact production URL in
+`FRONTEND_URL`; do not use a trailing slash.

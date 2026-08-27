@@ -158,14 +158,29 @@ SIMPLE_JWT = {
 # ---------------------------------------------------------------------------
 # CORS — the React frontend (Vite dev server + deployed origin) needs access
 # ---------------------------------------------------------------------------
-CORS_ALLOWED_ORIGINS = [
-    origin.strip()
-    for origin in os.environ.get(
-        "CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:4173,http://localhost:3000"
-    ).split(",")
-    if origin.strip()
+CORS_ALLOWED_ORIGINS = []
+for configured_origin in os.environ.get(
+    "CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:4173,http://localhost:3000"
+).split(","):
+    configured_origin = configured_origin.strip().rstrip("/")
+    if configured_origin and configured_origin not in CORS_ALLOWED_ORIGINS:
+        CORS_ALLOWED_ORIGINS.append(configured_origin)
+
+for configured_origin in (
+    os.environ.get("FRONTEND_URL", ""),
+    os.environ.get("FRONTEND_BASE_URL", ""),
+):
+    configured_origin = configured_origin.strip().rstrip("/")
+    if configured_origin and configured_origin not in CORS_ALLOWED_ORIGINS:
+        CORS_ALLOWED_ORIGINS.append(configured_origin)
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    regex.strip()
+    for regex in os.environ.get("CORS_ALLOWED_ORIGIN_REGEXES", "").split(",")
+    if regex.strip()
 ]
 CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS.copy()
 
 # ---------------------------------------------------------------------------
 # Email — stubbed to the console by default. Swap EMAIL_BACKEND for a real
