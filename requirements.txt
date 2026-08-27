@@ -1,0 +1,24 @@
+# Core framework
+Django==5.2.17
+djangorestframework==3.18.0
+
+# Auth
+djangorestframework-simplejwt==5.5.1
+
+# Filtering / search on list endpoints
+django-filter==26.1
+
+# CORS for the React frontend
+django-cors-headers==4.9.0
+
+# Image uploads (property photos, avatars, verification docs)
+pillow==12.3.0
+
+# .env loading
+python-dotenv==1.2.3
+
+# Production WSGI server
+gunicorn==23.0.0
+
+# Production database driver (Postgres). SQLite (dev) needs no driver.
+psycopg2-binary==2.9.10
