@@ -6,7 +6,6 @@ from the environment — nothing environment-specific is hardcoded here.
 """
 
 import os
-from urllib.parse import urlparse
 
 from .base import *  # noqa: F401,F403
 
@@ -24,44 +23,14 @@ vercel_host = os.environ.get("VERCEL_URL", "").strip().removeprefix("https://").
 if vercel_host and vercel_host not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(vercel_host)
 
-# Prefer the connection string commonly exposed by hosted Postgres services,
-# while keeping the existing DB_* variables supported.
-database_url = os.environ.get("DATABASE_URL")
-if database_url:
-    parsed_database_url = urlparse(database_url)
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": parsed_database_url.path.lstrip("/"),
-            "USER": parsed_database_url.username or "",
-            "PASSWORD": parsed_database_url.password or "",
-            "HOST": parsed_database_url.hostname or "",
-            "PORT": str(parsed_database_url.port or 5432),
-            "CONN_MAX_AGE": 60,
-            "OPTIONS": {"sslmode": "require"},
-        }
+# SQLite is used for this deployment. The database file must be committed so
+# Vercel includes its schema and existing records in the function bundle.
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
-elif any(os.environ.get(name) for name in ("DB_NAME", "DB_USER", "DB_PASSWORD")):
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.environ.get("DB_NAME", ""),
-            "USER": os.environ.get("DB_USER", ""),
-            "PASSWORD": os.environ.get("DB_PASSWORD", ""),
-            "HOST": os.environ.get("DB_HOST", "localhost"),
-            "PORT": os.environ.get("DB_PORT", "5432"),
-            "CONN_MAX_AGE": 60,
-        }
-    }
-else:
-    # Allows Vercel to import the application during its build. Configure a
-    # hosted Postgres database before sending production traffic.
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
+}
 
 CORS_ALLOW_ALL_ORIGINS = False
 

@@ -351,8 +351,18 @@ Vercel project:
 DJANGO_SETTINGS_MODULE=config.settings.prod
 DJANGO_SECRET_KEY=<long-random-secret>
 DJANGO_ALLOWED_HOSTS=<backend-domain>,<backend-project>.vercel.app
-DATABASE_URL=<managed-postgres-connection-string>
 FRONTEND_URL=https://<frontend-project>.vercel.app
+```
+
+This deployment uses SQLite. The `db.sqlite3` file is included in the Vercel
+bundle so the deployed function has the schema and existing records. SQLite on
+Vercel is not persistent: writes can disappear between deployments or function
+instances. For durable production data, use PostgreSQL instead.
+
+After changing migrations, run them locally before deploying:
+
+```bash
+python manage.py migrate
 ```
 
 Use `CORS_ALLOWED_ORIGIN_REGEXES` for additional Vercel preview URLs when
