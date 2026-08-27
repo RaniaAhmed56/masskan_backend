@@ -4,10 +4,7 @@
 import os
 import sys
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.prod")
-
-if __name__ == "__main__":
-    os.environ["DJANGO_SETTINGS_MODULE"] = "config.settings.dev"
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.dev")
 
 
 def main():
